@@ -30,6 +30,10 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
+  if (request.nextUrl.pathname.startsWith("/auth/callback")) {
+    return supabaseResponse
+  }
+
   // Protect dashboard routes - redirect to signin if not authenticated
   if (!user && !request.nextUrl.pathname.startsWith("/signin") && !request.nextUrl.pathname.startsWith("/signup")) {
     const url = request.nextUrl.clone()

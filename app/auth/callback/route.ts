@@ -8,9 +8,14 @@ export async function GET(request: Request) {
 
   if (code) {
     const supabase = await createClient()
-    await supabase.auth.exchangeCodeForSession(code)
+    const { error } = await supabase.auth.exchangeCodeForSession(code)
+
+    if (error) {
+      console.error("[v0] OAuth callback error:", error)
+      // Redirect to signin with error
+      return NextResponse.redirect(`${origin}/signin?error=${encodeURIComponent(error.message)}`)
+    }
   }
 
-  // Redirect to the home page after successful authentication
   return NextResponse.redirect(`${origin}/`)
 }
