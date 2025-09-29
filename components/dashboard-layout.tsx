@@ -4,7 +4,7 @@ import type React from "react"
 
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { Bell, Home, Settings, Workflow } from "lucide-react"
+import { Bell, Home, Settings, CreditCard, BookOpen } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
@@ -40,7 +40,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
-              <Workflow className="w-4 h-4 text-white" />
+              <BookOpen className="w-4 h-4 text-white" />
             </div>
             <span className="font-semibold text-gray-900 dark:text-gray-100">Waveify</span>
           </div>
@@ -83,6 +83,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             <nav className="space-y-1">
               {[
                 { name: "Overview", href: "/", icon: Home },
+                { name: "Billing", href: "/billing", icon: CreditCard },
+                { name: "Instructions", href: "/instructions", icon: BookOpen },
                 { name: "Settings", href: "/settings", icon: Settings },
               ].map((item) => {
                 const isActive = pathname === item.href
