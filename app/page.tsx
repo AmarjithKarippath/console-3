@@ -302,29 +302,32 @@ export default function Dashboard() {
 
           {/* Metrics Overview */}
           <div className="grid grid-cols-4 gap-6 mb-8">
-            {metricsData.map((metric, index) => (
-              <Card key={index} className="border-gray-200">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                      {metric.icon({ className: "w-5 h-5 text-gray-600" })}
+            {metricsData.map((metric, index) => {
+              const IconComponent = metric.icon
+              return (
+                <Card key={index} className="border-gray-200">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                        <IconComponent className="w-5 h-5 text-gray-600" />
+                      </div>
+                      <div
+                        className={`flex items-center gap-1 text-sm ${metric.trend === "up" ? "text-green-600" : "text-red-600"}`}
+                      >
+                        {metric.trend === "up" ? (
+                          <TrendingUp className="w-3 h-3" />
+                        ) : (
+                          <TrendingDown className="w-3 h-3" />
+                        )}
+                        {metric.change}
+                      </div>
                     </div>
-                    <div
-                      className={`flex items-center gap-1 text-sm ${metric.trend === "up" ? "text-green-600" : "text-red-600"}`}
-                    >
-                      {metric.trend === "up" ? (
-                        <TrendingUp className="w-3 h-3" />
-                      ) : (
-                        <TrendingDown className="w-3 h-3" />
-                      )}
-                      {metric.change}
-                    </div>
-                  </div>
-                  <div className="text-2xl font-semibold text-gray-900 mb-1">{metric.value}</div>
-                  <div className="text-sm text-gray-600">{metric.label}</div>
-                </CardContent>
-              </Card>
-            ))}
+                    <div className="text-2xl font-semibold text-gray-900 mb-1">{metric.value}</div>
+                    <div className="text-sm text-gray-600">{metric.label}</div>
+                  </CardContent>
+                </Card>
+              )
+            })}
           </div>
 
           <div className="grid grid-cols-3 gap-8">
