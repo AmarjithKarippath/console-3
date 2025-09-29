@@ -15,11 +15,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu"
-
-const navigation = [
-  { name: "Overview", href: "/", icon: Home },
-  { name: "Settings", href: "/settings", icon: Settings },
-]
+import { createClient } from "@/lib/supabase/client"
 
 interface DashboardLayoutProps {
   children: React.ReactNode
@@ -28,6 +24,13 @@ interface DashboardLayoutProps {
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const pathname = usePathname()
   const router = useRouter()
+  const supabase = createClient()
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut()
+    router.push("/signin")
+    router.refresh()
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -65,7 +68,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               <DropdownMenuSeparator />
               <DropdownMenuItem>Settings</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => router.push("/signin")}>Sign out</DropdownMenuItem>
+              <DropdownMenuItem onClick={handleSignOut}>Sign out</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -76,7 +79,10 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         <aside className="w-60 border-r border-gray-200 bg-white h-[calc(100vh-4rem)] overflow-y-auto">
           <div className="p-4">
             <nav className="space-y-1">
-              {navigation.map((item) => {
+              {[
+                { name: "Overview", href: "/", icon: Home },
+                { name: "Settings", href: "/settings", icon: Settings },
+              ].map((item) => {
                 const isActive = pathname === item.href
                 return (
                   <Link
