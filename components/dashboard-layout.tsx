@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { Bell, Home, Settings, CreditCard, BookOpen } from "lucide-react"
@@ -17,21 +17,45 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { createClient } from "@/lib/supabase/client"
 import { ThemeToggle } from "@/components/theme-toggle"
+import type { User } from "@supabase/supabase-js"
 
 interface DashboardLayoutProps {
   children: React.ReactNode
+  user?: User
 }
 
-export function DashboardLayout({ children }: DashboardLayoutProps) {
+export function DashboardLayout({ children, user: serverUser }: DashboardLayoutProps) {
   const pathname = usePathname()
   const router = useRouter()
   const supabase = createClient()
+  const [user, setUser] = useState<User | null>(serverUser || null)
+
+  useEffect(() => {
+    if (!serverUser) {
+      supabase.auth.getUser().then(({ data }) => {
+        if (data?.user) {
+          setUser(data.user)
+        }
+      })
+    }
+  }, [serverUser, supabase])
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()
     router.push("/signin")
     router.refresh()
   }
+
+  const fullName = user?.user_metadata?.full_name || user?.email?.split("@")[0] || "User"
+  const getInitials = (name: string) => {
+    const parts = name.split(" ")
+    if (parts.length >= 2) {
+      return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase()
+    }
+    return name.substring(0, 2).toUpperCase()
+  }
+  const initials = getInitials(fullName)
+  const avatarUrl = user?.user_metadata?.avatar_url
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-950">
@@ -60,13 +84,13 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon">
                 <Avatar className="w-8 h-8">
-                  <AvatarImage src="/placeholder.svg?height=32&width=32" />
-                  <AvatarFallback>AE</AvatarFallback>
+                  <AvatarImage src={avatarUrl || "/placeholder.svg?height=32&width=32"} />
+                  <AvatarFallback>{initials}</AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel>Alex Evans</DropdownMenuLabel>
+              <DropdownMenuLabel>{fullName}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem>Settings</DropdownMenuItem>
               <DropdownMenuSeparator />
