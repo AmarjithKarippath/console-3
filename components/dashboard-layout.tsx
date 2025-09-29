@@ -15,7 +15,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu"
-import { getSupabaseBrowserClient } from "@/lib/supabase/client"
+import { createClient } from "@/lib/supabase/client"
 
 interface DashboardLayoutProps {
   children: React.ReactNode
@@ -24,7 +24,7 @@ interface DashboardLayoutProps {
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const pathname = usePathname()
   const router = useRouter()
-  const supabase = getSupabaseBrowserClient()
+  const supabase = createClient()
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()
