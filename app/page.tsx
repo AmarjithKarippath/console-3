@@ -36,8 +36,11 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Progress } from "@/components/ui/progress"
+import { CopyableField } from "@/components/copyable-field"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { createClient } from "@/lib/supabase/client"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 // Sample data
 const metricsData = [
@@ -166,24 +169,32 @@ const recentActivity = [
 export default function Dashboard() {
   const [selectedPeriod, setSelectedPeriod] = useState("Last 30 days")
   const router = useRouter()
+  const supabase = createClient()
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut()
+    router.push("/signin")
+    router.refresh()
+  }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-gray-950">
       {/* Header */}
-      <header className="h-16 border-b border-gray-200 bg-white px-6 flex items-center justify-between">
+      <header className="h-16 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 px-6 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
               <Workflow className="w-4 h-4 text-white" />
             </div>
-            <span className="font-semibold text-gray-900">Waveify</span>
+            <span className="font-semibold text-gray-900 dark:text-gray-100">Waveify</span>
           </div>
-          <div className="text-sm text-gray-500">
+          <div className="text-sm text-gray-500 dark:text-gray-400">
             <span>Dashboard</span> <span className="mx-1">/</span> <span>Overview</span>
           </div>
         </div>
 
         <div className="flex items-center gap-4">
+          <ThemeToggle />
           <Button variant="ghost" size="icon" className="relative">
             <Bell className="w-4 h-4" />
             <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>
@@ -202,7 +213,7 @@ export default function Dashboard() {
               <DropdownMenuSeparator />
               <DropdownMenuItem>Settings</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => router.push("/signin")}>Sign out</DropdownMenuItem>
+              <DropdownMenuItem onClick={handleSignOut}>Sign out</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -210,19 +221,19 @@ export default function Dashboard() {
 
       <div className="flex">
         {/* Sidebar */}
-        <aside className="w-60 border-r border-gray-200 bg-white h-[calc(100vh-4rem)] overflow-y-auto">
+        <aside className="w-60 border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 h-[calc(100vh-4rem)] overflow-y-auto">
           <div className="p-4">
             <nav className="space-y-1">
               <Link
                 href="/"
-                className="flex items-center w-full justify-start bg-purple-50 text-purple-700 hover:bg-purple-100 px-3 py-2 rounded-md text-sm font-medium"
+                className="flex items-center w-full justify-start bg-purple-50 dark:bg-purple-950 text-purple-700 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-900 px-3 py-2 rounded-md text-sm font-medium"
               >
                 <Home className="w-4 h-4 mr-3" />
                 Overview
               </Link>
               <Link
                 href="/settings"
-                className="flex items-center w-full justify-start text-gray-600 hover:bg-gray-50 px-3 py-2 rounded-md text-sm font-medium"
+                className="flex items-center w-full justify-start text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-900 px-3 py-2 rounded-md text-sm font-medium"
               >
                 <Settings className="w-4 h-4 mr-3" />
                 Settings
@@ -232,13 +243,13 @@ export default function Dashboard() {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 p-8 bg-gray-50">
+        <main className="flex-1 p-8 bg-gray-50 dark:bg-gray-900">
           {/* Quick Actions Bar */}
           <div className="mb-8">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h1 className="text-2xl font-semibold text-gray-900">Dashboard Overview</h1>
-                <p className="text-gray-600 mt-1">Monitor your workflows and system performance</p>
+                <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">Dashboard Overview</h1>
+                <p className="text-gray-600 dark:text-gray-400 mt-1">Monitor your workflows and system performance</p>
               </div>
               <div className="flex items-center gap-3">
                 <DropdownMenu>
@@ -262,38 +273,38 @@ export default function Dashboard() {
 
             {/* Quick Action Cards */}
             <div className="grid grid-cols-3 gap-4 mb-8">
-              <Card className="p-6 hover:shadow-md transition-shadow cursor-pointer border-gray-200">
+              <Card className="p-6 hover:shadow-md transition-shadow cursor-pointer border-gray-200 dark:border-gray-800">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                    <Plus className="w-6 h-6 text-green-600" />
+                  <div className="w-12 h-12 bg-green-100 dark:bg-green-950 rounded-lg flex items-center justify-center">
+                    <Plus className="w-6 h-6 text-green-600 dark:text-green-400" />
                   </div>
                   <div>
-                    <h3 className="font-medium text-gray-900">New workflow</h3>
-                    <p className="text-sm text-gray-600">Create a new automation</p>
+                    <h3 className="font-medium text-gray-900 dark:text-gray-100">New workflow</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Create a new automation</p>
                   </div>
                 </div>
               </Card>
 
-              <Card className="p-6 hover:shadow-md transition-shadow cursor-pointer border-gray-200">
+              <Card className="p-6 hover:shadow-md transition-shadow cursor-pointer border-gray-200 dark:border-gray-800">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
-                    <AlertTriangle className="w-6 h-6 text-red-600" />
+                  <div className="w-12 h-12 bg-red-100 dark:bg-red-950 rounded-lg flex items-center justify-center">
+                    <AlertTriangle className="w-6 h-6 text-red-600 dark:text-red-400" />
                   </div>
                   <div>
-                    <h3 className="font-medium text-gray-900">View breaches</h3>
-                    <p className="text-sm text-gray-600">Check failed workflows</p>
+                    <h3 className="font-medium text-gray-900 dark:text-gray-100">View breaches</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Check failed workflows</p>
                   </div>
                 </div>
               </Card>
 
-              <Card className="p-6 hover:shadow-md transition-shadow cursor-pointer border-gray-200">
+              <Card className="p-6 hover:shadow-md transition-shadow cursor-pointer border-gray-200 dark:border-gray-800">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <RefreshCw className="w-6 h-6 text-blue-600" />
+                  <div className="w-12 h-12 bg-blue-100 dark:bg-blue-950 rounded-lg flex items-center justify-center">
+                    <RefreshCw className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                   </div>
                   <div>
-                    <h3 className="font-medium text-gray-900">Re-run last failed</h3>
-                    <p className="text-sm text-gray-600">Retry failed executions</p>
+                    <h3 className="font-medium text-gray-900 dark:text-gray-100">Re-run last failed</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Retry failed executions</p>
                   </div>
                 </div>
               </Card>
@@ -305,14 +316,14 @@ export default function Dashboard() {
             {metricsData.map((metric, index) => {
               const IconComponent = metric.icon
               return (
-                <Card key={index} className="border-gray-200">
+                <Card key={index} className="border-gray-200 dark:border-gray-800">
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between mb-4">
-                      <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                        <IconComponent className="w-5 h-5 text-gray-600" />
+                      <div className="w-10 h-10 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
+                        <IconComponent className="w-5 h-5 text-gray-600 dark:text-gray-400" />
                       </div>
                       <div
-                        className={`flex items-center gap-1 text-sm ${metric.trend === "up" ? "text-green-600" : "text-red-600"}`}
+                        className={`flex items-center gap-1 text-sm ${metric.trend === "up" ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}`}
                       >
                         {metric.trend === "up" ? (
                           <TrendingUp className="w-3 h-3" />
@@ -322,19 +333,37 @@ export default function Dashboard() {
                         {metric.change}
                       </div>
                     </div>
-                    <div className="text-2xl font-semibold text-gray-900 mb-1">{metric.value}</div>
-                    <div className="text-sm text-gray-600">{metric.label}</div>
+                    <div className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-1">{metric.value}</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">{metric.label}</div>
                   </CardContent>
                 </Card>
               )
             })}
           </div>
 
+          <Card className="mb-8 border-gray-200 dark:border-gray-800">
+            <CardHeader>
+              <CardTitle className="text-lg font-semibold">User Information</CardTitle>
+              <CardDescription>Your API credentials and embedded code</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <CopyableField label="Customer ID:" value="cus_a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6" />
+              <CopyableField
+                label="Customer Secret:"
+                value="sk_live_51A2B3C4D5E6F7G8H9I0J1K2L3M4N5O6P7Q8R9S0T1U2V3W4X5Y6Z7"
+              />
+              <CopyableField
+                label="Embedded code:"
+                value='<script src="https://cdn.waveify.com/v1/embed.js" data-customer-id="cus_a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6" data-api-key="pk_live_51A2B3C4D5E6F7G8H9I0J1K2L3M4N5O6P7Q8R9S0T1U2V3W4X5Y6Z7" async></script>'
+              />
+            </CardContent>
+          </Card>
+
           <div className="grid grid-cols-3 gap-8">
             {/* Main Content Area */}
             <div className="col-span-2 space-y-8">
               {/* Charts Section */}
-              <Card className="border-gray-200">
+              <Card className="border-gray-200 dark:border-gray-800">
                 <CardHeader className="pb-4">
                   <div className="flex items-center justify-between">
                     <div>
@@ -354,7 +383,7 @@ export default function Dashboard() {
                   <div className="h-80">
                     <ResponsiveContainer width="100%" height="100%">
                       <AreaChart data={chartData}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
+                        <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" className="dark:stroke-gray-800" />
                         <XAxis dataKey="name" stroke="#6b7280" fontSize={12} />
                         <YAxis stroke="#6b7280" fontSize={12} />
                         <Tooltip
@@ -388,7 +417,7 @@ export default function Dashboard() {
               </Card>
 
               {/* Workflow Status Table */}
-              <Card className="border-gray-200">
+              <Card className="border-gray-200 dark:border-gray-800">
                 <CardHeader className="pb-4">
                   <div className="flex items-center justify-between">
                     <div>
@@ -410,44 +439,55 @@ export default function Dashboard() {
                 <CardContent className="p-0">
                   <Table>
                     <TableHeader>
-                      <TableRow className="bg-gray-50">
-                        <TableHead className="font-medium text-gray-700">Run ID</TableHead>
-                        <TableHead className="font-medium text-gray-700">Workflow</TableHead>
-                        <TableHead className="font-medium text-gray-700">Started</TableHead>
-                        <TableHead className="font-medium text-gray-700">Duration</TableHead>
-                        <TableHead className="font-medium text-gray-700">Status</TableHead>
-                        <TableHead className="font-medium text-gray-700">Error</TableHead>
-                        <TableHead className="font-medium text-gray-700 w-12"></TableHead>
+                      <TableRow className="bg-gray-50 dark:bg-gray-900">
+                        <TableHead className="font-medium text-gray-700 dark:text-gray-300">Run ID</TableHead>
+                        <TableHead className="font-medium text-gray-700 dark:text-gray-300">Workflow</TableHead>
+                        <TableHead className="font-medium text-gray-700 dark:text-gray-300">Started</TableHead>
+                        <TableHead className="font-medium text-gray-700 dark:text-gray-300">Duration</TableHead>
+                        <TableHead className="font-medium text-gray-700 dark:text-gray-300">Status</TableHead>
+                        <TableHead className="font-medium text-gray-700 dark:text-gray-300">Error</TableHead>
+                        <TableHead className="font-medium text-gray-700 dark:text-gray-300 w-12"></TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {workflowData.map((workflow) => (
-                        <TableRow key={workflow.id} className="hover:bg-gray-50">
+                        <TableRow key={workflow.id} className="hover:bg-gray-50 dark:hover:bg-gray-900">
                           <TableCell className="font-mono text-sm">{workflow.id}</TableCell>
                           <TableCell className="font-medium">{workflow.name}</TableCell>
-                          <TableCell className="text-gray-600">{workflow.started}</TableCell>
-                          <TableCell className="text-gray-600">{workflow.duration}</TableCell>
+                          <TableCell className="text-gray-600 dark:text-gray-400">{workflow.started}</TableCell>
+                          <TableCell className="text-gray-600 dark:text-gray-400">{workflow.duration}</TableCell>
                           <TableCell>
                             {workflow.status === "running" && (
-                              <Badge variant="secondary" className="bg-blue-100 text-blue-700">
+                              <Badge
+                                variant="secondary"
+                                className="bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-400"
+                              >
                                 <div className="w-2 h-2 bg-blue-500 rounded-full mr-2 animate-pulse"></div>
                                 Running
                               </Badge>
                             )}
                             {workflow.status === "success" && (
-                              <Badge variant="secondary" className="bg-green-100 text-green-700">
+                              <Badge
+                                variant="secondary"
+                                className="bg-green-100 dark:bg-green-950 text-green-700 dark:text-green-400"
+                              >
                                 <CheckCircle className="w-3 h-3 mr-1" />
                                 Success
                               </Badge>
                             )}
                             {workflow.status === "failed" && (
-                              <Badge variant="secondary" className="bg-red-100 text-red-700">
+                              <Badge
+                                variant="secondary"
+                                className="bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-400"
+                              >
                                 <XCircle className="w-3 h-3 mr-1" />
                                 Failed
                               </Badge>
                             )}
                           </TableCell>
-                          <TableCell className="text-gray-600 max-w-48 truncate">{workflow.error || "None"}</TableCell>
+                          <TableCell className="text-gray-600 dark:text-gray-400 max-w-48 truncate">
+                            {workflow.error || "None"}
+                          </TableCell>
                           <TableCell>
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>
@@ -475,19 +515,19 @@ export default function Dashboard() {
             {/* Right Sidebar */}
             <div className="space-y-6">
               {/* Account Balance */}
-              <Card className="border-gray-200">
+              <Card className="border-gray-200 dark:border-gray-800">
                 <CardHeader className="pb-4">
                   <CardTitle className="text-lg font-semibold">Account Balance</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-3xl font-semibold text-gray-900 mb-4">$1,423.25</div>
+                  <div className="text-3xl font-semibold text-gray-900 dark:text-gray-100 mb-4">$1,423.25</div>
                   <div className="space-y-3 mb-4">
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">Monthly Credits</span>
+                      <span className="text-sm text-gray-600 dark:text-gray-400">Monthly Credits</span>
                       <span className="text-sm font-medium">$500.00</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">Usage This Month</span>
+                      <span className="text-sm text-gray-600 dark:text-gray-400">Usage This Month</span>
                       <span className="text-sm font-medium">$76.75</span>
                     </div>
                     <Progress value={15} className="h-2" />
@@ -504,7 +544,7 @@ export default function Dashboard() {
               </Card>
 
               {/* Recent Activity */}
-              <Card className="border-gray-200">
+              <Card className="border-gray-200 dark:border-gray-800">
                 <CardHeader className="pb-4">
                   <CardTitle className="text-lg font-semibold">Recent Activity</CardTitle>
                 </CardHeader>
@@ -513,14 +553,16 @@ export default function Dashboard() {
                     {recentActivity.map((activity, index) => (
                       <div
                         key={index}
-                        className="flex items-center gap-3 p-4 hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
+                        className="flex items-center gap-3 p-4 hover:bg-gray-50 dark:hover:bg-gray-900 border-b border-gray-100 dark:border-gray-800 last:border-b-0"
                       >
                         <div
                           className={`w-2 h-2 rounded-full ${activity.status === "success" ? "bg-green-500" : "bg-red-500"}`}
                         ></div>
                         <div className="flex-1 min-w-0">
-                          <div className="font-medium text-sm text-gray-900 truncate">{activity.workflow}</div>
-                          <div className="text-xs text-gray-600">
+                          <div className="font-medium text-sm text-gray-900 dark:text-gray-100 truncate">
+                            {activity.workflow}
+                          </div>
+                          <div className="text-xs text-gray-600 dark:text-gray-400">
                             {activity.time} • {activity.duration}
                           </div>
                         </div>
@@ -531,7 +573,7 @@ export default function Dashboard() {
               </Card>
 
               {/* Team Status */}
-              <Card className="border-gray-200">
+              <Card className="border-gray-200 dark:border-gray-800">
                 <CardHeader className="pb-4">
                   <CardTitle className="text-lg font-semibold">Team Status</CardTitle>
                 </CardHeader>
@@ -540,7 +582,7 @@ export default function Dashboard() {
                     {teamMembers.map((member, index) => (
                       <div
                         key={index}
-                        className="flex items-center gap-3 p-4 hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
+                        className="flex items-center gap-3 p-4 hover:bg-gray-50 dark:hover:bg-gray-900 border-b border-gray-100 dark:border-gray-800 last:border-b-0"
                       >
                         <div className="relative">
                           <Avatar className="w-8 h-8">
@@ -553,14 +595,14 @@ export default function Dashboard() {
                             </AvatarFallback>
                           </Avatar>
                           <div
-                            className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white ${
+                            className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white dark:border-gray-950 ${
                               member.status === "online" ? "bg-green-500" : "bg-gray-400"
                             }`}
                           ></div>
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="font-medium text-sm text-gray-900">{member.name}</div>
-                          <div className="text-xs text-gray-600">
+                          <div className="font-medium text-sm text-gray-900 dark:text-gray-100">{member.name}</div>
+                          <div className="text-xs text-gray-600 dark:text-gray-400">
                             {member.role} • {member.availability}
                           </div>
                         </div>
