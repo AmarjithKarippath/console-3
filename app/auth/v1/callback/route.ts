@@ -44,7 +44,7 @@ export async function GET(request: Request) {
 
     if (!error) {
       console.log("[v0] Callback - Success! url:", `${process.env.CONSOLE_URL}/`, "origin:", origin)
-      return NextResponse.redirect(`${origin}/`)
+      return NextResponse.redirect(`${process.env.CONSOLE_URL}/`)
     }
 
     console.error("[v0] Callback - Error:", error)
