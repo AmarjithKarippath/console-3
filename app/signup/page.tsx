@@ -32,7 +32,7 @@ export default function SignUpPage() {
       email,
       password,
       options: {
-        emailRedirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL || window.location.origin,
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
         data: {
           full_name: name,
         },
@@ -57,7 +57,7 @@ export default function SignUpPage() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL || `${window.location.origin}/auth/callback`,
+        redirectTo: `${window.location.origin}/auth/callback`,
       },
     })
 
