@@ -43,8 +43,8 @@ export async function GET(request: Request) {
     const { error } = await supabase.auth.exchangeCodeForSession(code)
 
     if (!error) {
-      console.log("[v0] Callback - Success, redirecting to:", `${process.env.CONSOLE_URL}/`)
-      return NextResponse.redirect(`${process.env.CONSOLE_URL}/`)
+      console.log("[v0] Callback - Success! url:", `${process.env.CONSOLE_URL}/`, "origin:", origin)
+      return NextResponse.redirect(`${origin}/`)
     }
 
     console.error("[v0] Callback - Error:", error)
