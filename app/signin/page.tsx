@@ -46,10 +46,15 @@ export default function SignInPage() {
 
     const supabase = createClient()
 
+    const redirectUrl =
+      typeof window !== "undefined" && window.location.hostname === "localhost"
+        ? process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL || "http://localhost:3000/auth/v1/callback"
+        : `${window.location.origin}/auth/v1/callback`
+
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL || `${window.location.origin}/auth/v1/callback`,
+        redirectTo: redirectUrl,
       },
     })
 
