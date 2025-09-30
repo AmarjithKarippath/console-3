@@ -15,8 +15,14 @@ export default async function Dashboard() {
     redirect("/signin")
   }
 
+  const { data: custInfo } = await supabase.from("cust_info").select("*").eq("cust_id", user.id).single()
+
   // Get user's full name from metadata or use email as fallback
   const fullName = user.user_metadata?.full_name || user.email?.split("@")[0] || "User"
+
+  const customerId = custInfo?.cust_id || "Not set up yet"
+  const customerSecret = custInfo?.cust_secret || "Not set up yet"
+  const embeddedCode = custInfo?.agent_code || "Not set up yet"
 
   return (
     <DashboardLayout user={user}>
@@ -32,15 +38,9 @@ export default async function Dashboard() {
             <CardDescription>Your API credentials and embedded code</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <CopyableField label="Customer ID:" value="cus_a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6" />
-            <CopyableField
-              label="Customer Secret:"
-              value="sk_live_51A2B3C4D5E6F7G8H9I0J1K2L3M4N5O6P7Q8R9S0T1U2V3W4X5Y6Z7"
-            />
-            <CopyableField
-              label="Embedded code:"
-              value='<script src="https://cdn.waveify.com/v1/embed.js" data-customer-id="cus_a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6" data-api-key="pk_live_51A2B3C4D5E6F7G8H9I0J1K2L3M4N5O6P7Q8R9S0T1U2V3W4X5Y6Z7" async></script>'
-            />
+            <CopyableField label="Customer ID:" value={customerId} />
+            <CopyableField label="Customer Secret:" value={customerSecret} />
+            <CopyableField label="Embedded code:" value={embeddedCode} />
           </CardContent>
         </Card>
       </div>
