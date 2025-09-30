@@ -10,6 +10,7 @@ import "./globals.css"
 export const metadata: Metadata = {
   title: "Waveify Console",
   description: "Manage your Waveify Agents.",
+    generator: 'v0.app'
 }
 
 export default function RootLayout({
