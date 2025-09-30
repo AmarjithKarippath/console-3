@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Workflow } from "lucide-react"
 import Link from "next/link"
 import { createClient } from "@/lib/supabase/client"
 
@@ -83,9 +82,7 @@ export default function SignUpPage() {
         <Card className="w-full max-w-md">
           <CardHeader className="space-y-4 text-center">
             <div className="flex justify-center">
-              <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
-                <Workflow className="w-6 h-6 text-white" />
-              </div>
+              <img src="/waveify-logo.png" alt="Waveify Logo" className="w-16 h-16" />
             </div>
             <div>
               <CardTitle className="text-2xl font-bold">Check your email</CardTitle>
@@ -107,9 +104,7 @@ export default function SignUpPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-4 text-center">
           <div className="flex justify-center">
-            <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
-              <Workflow className="w-6 h-6 text-white" />
-            </div>
+            <img src="/waveify-logo.png" alt="Waveify Logo" className="w-16 h-16" />
           </div>
           <div>
             <CardTitle className="text-2xl font-bold">Join Waveify</CardTitle>
