@@ -1,6 +1,6 @@
 "use client"
 
-import { Settings } from "lucide-react"
+import { Settings, Code } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { DashboardLayout } from "@/components/dashboard-layout"
 
@@ -110,6 +110,114 @@ export default function InstructionsPage() {
                     </a>
                   </li>
                 </ul>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-gray-200 dark:border-gray-800 bg-purple-50 dark:bg-purple-950/20">
+          <CardHeader>
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-purple-100 dark:bg-purple-950 rounded-lg flex items-center justify-center flex-shrink-0">
+                <Code className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+              </div>
+              <div className="flex-1">
+                <CardTitle className="text-lg font-semibold mb-1">
+                  Embed Waveify Agent to your store landing page
+                </CardTitle>
+                <CardDescription>Add the Waveify voice agent to your Shopify store</CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4 text-gray-700 dark:text-gray-300">
+              <div>
+                <h4 className="font-semibold mb-3 text-purple-700 dark:text-purple-300">
+                  Add Code via Shopify Theme Editor
+                </h4>
+
+                <div className="space-y-3">
+                  <div>
+                    <p className="font-medium mb-1">1. Generate Embed Code:</p>
+                    <ul className="list-disc list-inside space-y-1 ml-4">
+                      <li>Go to Waveify Overview</li>
+                      <li>Click on "Generate new Embedded code" and copy it</li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <p className="font-medium mb-1">2. Log into Shopify Admin:</p>
+                    <ul className="list-disc list-inside space-y-1 ml-4">
+                      <li>
+                        Go to{" "}
+                        <a
+                          href="http://admin.shopify.com/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-purple-600 dark:text-purple-400 hover:underline"
+                        >
+                          admin.shopify.com
+                        </a>{" "}
+                        and log in
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <p className="font-medium mb-1">3. Navigate to Online Store → Themes:</p>
+                    <ul className="list-disc list-inside space-y-1 ml-4">
+                      <li>
+                        In the left sidebar, click <strong>Online Store</strong>, then <strong>Themes</strong>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <p className="font-medium mb-1">4. Open Theme Editor:</p>
+                    <ul className="list-disc list-inside space-y-1 ml-4">
+                      <li>
+                        Click <strong>"Customize"</strong> on your live theme
+                      </li>
+                      <li>This opens the Shopify Theme Editor</li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <p className="font-medium mb-1">5. Choose the Homepage section:</p>
+                    <ul className="list-disc list-inside space-y-1 ml-4">
+                      <li>
+                        From the dropdown at the top, select <strong>Home page</strong>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <p className="font-medium mb-1">6. Add a new "Custom Liquid" or "Custom HTML" block:</p>
+                    <ul className="list-disc list-inside space-y-1 ml-4">
+                      <li>Scroll to the section where you want to add the code</li>
+                      <li>
+                        Click <strong>Add block</strong> → choose <strong>Custom Liquid</strong> or{" "}
+                        <strong>Custom HTML</strong> (depending on your theme)
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <p className="font-medium mb-1">7. Paste your embed code:</p>
+                    <ul className="list-disc list-inside space-y-1 ml-4">
+                      <li>Paste your embed code (e.g., iframe, script tag, HTML snippet)</li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <p className="font-medium mb-1">8. Save your changes:</p>
+                    <ul className="list-disc list-inside space-y-1 ml-4">
+                      <li>
+                        Click <strong>Save</strong> in the top right corner
+                      </li>
+                    </ul>
+                  </div>
+                </div>
               </div>
             </div>
           </CardContent>
