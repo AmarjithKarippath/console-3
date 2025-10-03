@@ -121,15 +121,7 @@ export default function BillingPage() {
                     </li>
                   ))}
                 </ul>
-                <Button
-                  className={`w-full ${
-                    plan.popular
-                      ? "bg-purple-600 hover:bg-purple-700 text-white"
-                      : "bg-transparent border border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-900"
-                  }`}
-                >
-                  {plan.cta}
-                </Button>
+                <Button className={`w-full bg-purple-600 hover:bg-purple-700 text-white`}>{plan.cta}</Button>
               </CardContent>
             </Card>
           ))}
