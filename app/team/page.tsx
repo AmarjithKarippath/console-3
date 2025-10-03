@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import {
   Search,
   MoreHorizontal,
@@ -29,6 +29,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
 import { DashboardLayout } from "@/components/dashboard-layout"
+import { createClient } from "@/lib/supabase/client"
 
 const teamMembers = [
   {
@@ -146,6 +147,17 @@ const roles = [
 
 export default function TeamPage() {
   const [searchQuery, setSearchQuery] = useState("")
+  const [currentUserName, setCurrentUserName] = useState("User")
+  const supabase = createClient()
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      if (data?.user) {
+        const fullName = data.user.user_metadata?.full_name || data.user.email?.split("@")[0] || "User"
+        setCurrentUserName(fullName)
+      }
+    })
+  }, [supabase])
 
   const filteredMembers = teamMembers.filter(
     (member) =>
