@@ -1,7 +1,10 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { CopyableField } from "@/components/copyable-field"
 import { DashboardLayout } from "@/components/dashboard-layout"
-import { MailOpen } from "lucide-react"
+import { AgentConfigForm } from "@/components/agent-config-form"
+import { MailOpen, AlertCircle } from "lucide-react"
+import Link from "next/link"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 
 export default async function Dashboard() {
   // Mock user data for local development
@@ -48,6 +51,26 @@ export default async function Dashboard() {
               </h2>
             </div>
             <div className="w-2 h-2 bg-violet-500 rounded-full animate-pulse" />
+          </CardContent>
+        </Card>
+
+        <Card className="border-gray-200 dark:border-gray-800">
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold">Agent Configuration</CardTitle>
+            <CardDescription>Configure your Shopify integration settings</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <AgentConfigForm />
+
+            <Alert className="bg-blue-50 border-blue-200 dark:bg-blue-950/20 dark:border-blue-900">
+              <AlertCircle className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+              <AlertDescription className="text-blue-800 dark:text-blue-200">
+                Need help filling out this information?{" "}
+                <Link href="/instructions" className="font-medium underline hover:no-underline">
+                  Refer to the Instructions page
+                </Link>
+              </AlertDescription>
+            </Alert>
           </CardContent>
         </Card>
       </div>
