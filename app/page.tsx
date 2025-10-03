@@ -1,33 +1,27 @@
-import { redirect } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { CopyableField } from "@/components/copyable-field"
-import { createClient } from "@/lib/supabase/server"
 import { DashboardLayout } from "@/components/dashboard-layout"
-
-import {  MailOpen } from "lucide-react"
+import { MailOpen } from "lucide-react"
 
 export default async function Dashboard() {
-  const supabase = await createClient()
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser()
-
-  if (error || !user) {
-    redirect("/signin")
+  // Mock user data for local development
+  const mockUser = {
+    id: "local-dev-user",
+    email: "developer@local.dev",
+    user_metadata: {
+      full_name: "Local Developer",
+    },
   }
 
-  const { data: custInfo } = await supabase.from("cust_info").select("*").eq("cust_id", user.id).single()
+  // Mock customer info for local development
+  const customerId = "dev-customer-id-12345"
+  const customerSecret = "dev-secret-key-67890"
+  const embeddedCode = "<script src='https://example.com/embed.js'></script>"
 
-  // Get user's full name from metadata or use email as fallback
-  const fullName = user.user_metadata?.full_name || user.email?.split("@")[0] || "User"
-
-  const customerId = custInfo?.cust_id || "Not set up yet"
-  const customerSecret = custInfo?.cust_secret || "Not set up yet"
-  const embeddedCode = custInfo?.agent_code || "Not set up yet"
+  const fullName = mockUser.user_metadata?.full_name || mockUser.email?.split("@")[0] || "User"
 
   return (
-    <DashboardLayout user={user}>
+    <DashboardLayout user={mockUser as any}>
       <div className="space-y-8">
         <div className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950/20 dark:to-blue-950/20 rounded-lg p-6 border border-purple-100 dark:border-purple-900">
           <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">Welcome back, {fullName}!</h2>
@@ -44,15 +38,16 @@ export default async function Dashboard() {
             <CopyableField label="Customer Secret:" value={customerSecret} />
             <CopyableField label="Embedded code:" value={embeddedCode} />
 
-
-              <div className="flex items-center gap-2">
-                <MailOpen className="w-4 h-4" />
-                  <h2 className="text-xl lg:text-xl text-gray-600 font-bold dark:text-gray-300 leading-relaxed max-w-2xl">Enquire:</h2>
-                  <h2 className="text-xl lg:text-xl text-gray-600 dark:text-gray-300 leading-relaxed max-w-2xl">amar@waveify.ai</h2>
-              </div>
-              <div className="w-2 h-2 bg-violet-500 rounded-full animate-pulse" />
-
-
+            <div className="flex items-center gap-2">
+              <MailOpen className="w-4 h-4" />
+              <h2 className="text-xl lg:text-xl text-gray-600 font-bold dark:text-gray-300 leading-relaxed max-w-2xl">
+                Enquire:
+              </h2>
+              <h2 className="text-xl lg:text-xl text-gray-600 dark:text-gray-300 leading-relaxed max-w-2xl">
+                amar@waveify.ai
+              </h2>
+            </div>
+            <div className="w-2 h-2 bg-violet-500 rounded-full animate-pulse" />
           </CardContent>
         </Card>
       </div>
