@@ -21,6 +21,9 @@ import type { User } from "@supabase/supabase-js"
 
 import Image from 'next/image'
 
+
+import logo from '@/app/assets/waveify_logo.png';
+
 interface DashboardLayoutProps {
   children: React.ReactNode
   user?: User
@@ -65,7 +68,7 @@ export function DashboardLayout({ children, user: serverUser }: DashboardLayoutP
       <header className="h-16 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 px-6 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <Image src="@/app/assets/waveify_logo.png" alt="Waveify Logo" width={32} height={32} className="w-8 h-8" />
+            <Image src={ logo } alt="Waveify Logo" width={32} height={32} className="w-8 h-8" />
             <span className="font-semibold text-gray-900 dark:text-gray-100">Waveify</span>
           </div>
           <div className="text-sm text-gray-500 dark:text-gray-400">
