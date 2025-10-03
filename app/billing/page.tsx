@@ -8,6 +8,21 @@ import { DashboardLayout } from "@/components/dashboard-layout"
 
 const billingPlans = [
   {
+    name: "Free",
+    price: "$0",
+    period: "/month",
+    description: "Get started with basic AI voice commerce features",
+    features: [
+      "10 voice interactions/month",
+      "Basic order tracking",
+      "Product information",
+      "Email support",
+      "Shopify integration",
+    ],
+    cta: "Get Started",
+    popular: false,
+  },
+  {
     name: "Starter",
     price: "$49",
     period: "/month",
@@ -76,7 +91,7 @@ export default function BillingPage() {
         </div>
 
         {/* Billing Plans */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
           {billingPlans.map((plan) => (
             <Card
               key={plan.name}
