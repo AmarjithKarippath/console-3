@@ -77,9 +77,20 @@ export default function SettingsPage() {
     if (saved) {
       try {
         const parsed = JSON.parse(saved)
-        setInstructions(parsed)
+        const isValid =
+          Array.isArray(parsed) &&
+          parsed.every((item) => item.iconName && typeof item.iconName === "string" && iconMap[item.iconName])
+
+        if (isValid) {
+          setInstructions(parsed)
+        } else {
+          // Clear invalid data and use defaults
+          console.log("[v0] Invalid localStorage data detected, using defaults")
+          localStorage.removeItem("agentInstructions")
+        }
       } catch (e) {
         console.error("Failed to parse saved instructions:", e)
+        localStorage.removeItem("agentInstructions")
       }
     }
   }, [])
@@ -112,16 +123,19 @@ export default function SettingsPage() {
             Configure how your AI voice agent should interact with customers
           </p>
           <div className="grid grid-cols-1 gap-6">
-            {instructions.map((instruction, index) => (
-              <EditableInstructionCard
-                key={index}
-                icon={iconMap[instruction.iconName]}
-                title={instruction.title}
-                subtitle={instruction.subtitle}
-                content={instruction.content}
-                onSave={(newContent) => handleSaveInstruction(index, newContent)}
-              />
-            ))}
+            {instructions.map((instruction, index) => {
+              const IconComponent = iconMap[instruction.iconName] || MessageSquare
+              return (
+                <EditableInstructionCard
+                  key={index}
+                  icon={IconComponent}
+                  title={instruction.title}
+                  subtitle={instruction.subtitle}
+                  content={instruction.content}
+                  onSave={(newContent) => handleSaveInstruction(index, newContent)}
+                />
+              )
+            })}
           </div>
         </div>
       </div>
