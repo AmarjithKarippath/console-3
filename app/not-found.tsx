@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Home, ArrowLeft } from "lucide-react"
+import { Home } from "lucide-react"
 import Image from "next/image"
 
 export default function NotFound() {
@@ -29,7 +29,7 @@ export default function NotFound() {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+        <div className="flex justify-center">
           <Button
             asChild
             size="lg"
@@ -38,12 +38,6 @@ export default function NotFound() {
             <Link href="/" className="flex items-center gap-2">
               <Home className="h-4 w-4" />
               Go to Dashboard
-            </Link>
-          </Button>
-          <Button asChild variant="outline" size="lg">
-            <Link href="javascript:history.back()" className="flex items-center gap-2">
-              <ArrowLeft className="h-4 w-4" />
-              Go Back
             </Link>
           </Button>
         </div>
