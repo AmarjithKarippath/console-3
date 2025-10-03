@@ -37,6 +37,17 @@ export default async function Dashboard() {
           <p className="text-gray-600 dark:text-gray-400">Here's your dashboard overview and API credentials</p>
         </div>
 
+        <div className="flex items-center gap-2">
+          <MailOpen className="w-4 h-4" />
+          <h2 className="text-xl lg:text-xl text-gray-600 font-bold dark:text-gray-300 leading-relaxed max-w-2xl">
+            Enquire:
+          </h2>
+          <h2 className="text-xl lg:text-xl text-gray-600 dark:text-gray-300 leading-relaxed max-w-2xl">
+            amar@waveify.ai
+          </h2>
+          <div className="w-2 h-2 bg-violet-500 rounded-full animate-pulse" />
+        </div>
+
         <Card className="border-gray-200 dark:border-gray-800">
           <CardHeader>
             <CardTitle className="text-lg font-semibold">User Information</CardTitle>
@@ -47,16 +58,7 @@ export default async function Dashboard() {
             <CopyableField label="Customer Secret:" value={customerSecret} />
             <CopyableField label="Embedded code:" value={embeddedCode} />
 
-            <div className="flex items-center gap-2">
-              <MailOpen className="w-4 h-4" />
-              <h2 className="text-xl lg:text-xl text-gray-600 font-bold dark:text-gray-300 leading-relaxed max-w-2xl">
-                Enquire:
-              </h2>
-              <h2 className="text-xl lg:text-xl text-gray-600 dark:text-gray-300 leading-relaxed max-w-2xl">
-                amar@waveify.ai
-              </h2>
-            </div>
-            <div className="w-2 h-2 bg-violet-500 rounded-full animate-pulse" />
+
           </CardContent>
         </Card>
 
