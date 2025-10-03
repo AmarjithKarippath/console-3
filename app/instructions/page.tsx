@@ -1,10 +1,13 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { Phone, MessageSquare, ShoppingCart, Package, CreditCard, BarChart, Settings } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { DashboardLayout } from "@/components/dashboard-layout"
+import { EditableInstructionCard } from "@/components/editable-instruction-card"
+import { useToast } from "@/hooks/use-toast"
 
-const instructions = [
+const defaultInstructions = [
   {
     icon: Phone,
     title: "Greeting & Introduction",
@@ -50,6 +53,33 @@ const instructions = [
 ]
 
 export default function InstructionsPage() {
+  const [instructions, setInstructions] = useState(defaultInstructions)
+  const { toast } = useToast()
+
+  useEffect(() => {
+    const saved = localStorage.getItem("agentInstructions")
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved)
+        setInstructions(parsed)
+      } catch (e) {
+        console.error("Failed to parse saved instructions:", e)
+      }
+    }
+  }, [])
+
+  const handleSaveInstruction = (index: number, newContent: string) => {
+    const updated = [...instructions]
+    updated[index] = { ...updated[index], content: newContent }
+    setInstructions(updated)
+    localStorage.setItem("agentInstructions", JSON.stringify(updated))
+
+    toast({
+      title: "Saved successfully",
+      description: "Your instruction has been updated.",
+    })
+  }
+
   return (
     <DashboardLayout>
       <div className="space-y-8">
@@ -161,29 +191,17 @@ export default function InstructionsPage() {
           </CardContent>
         </Card>
 
-        {/* Instructions Grid */}
         <div className="grid grid-cols-1 gap-6">
-          {instructions.map((instruction, index) => {
-            const IconComponent = instruction.icon
-            return (
-              <Card key={index} className="border-gray-200 dark:border-gray-800">
-                <CardHeader>
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-purple-100 dark:bg-purple-950 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <IconComponent className="w-6 h-6 text-purple-600 dark:text-purple-400" />
-                    </div>
-                    <div className="flex-1">
-                      <CardTitle className="text-lg font-semibold mb-1">{instruction.title}</CardTitle>
-                      <CardDescription>{instruction.subtitle}</CardDescription>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{instruction.content}</p>
-                </CardContent>
-              </Card>
-            )
-          })}
+          {instructions.map((instruction, index) => (
+            <EditableInstructionCard
+              key={index}
+              icon={instruction.icon}
+              title={instruction.title}
+              subtitle={instruction.subtitle}
+              content={instruction.content}
+              onSave={(newContent) => handleSaveInstruction(index, newContent)}
+            />
+          ))}
         </div>
       </div>
     </DashboardLayout>
