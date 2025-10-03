@@ -3,8 +3,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { CopyableField } from "@/components/copyable-field"
 import { createClient } from "@/lib/supabase/server"
 import { DashboardLayout } from "@/components/dashboard-layout"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import Link from "next/link"
+import { MailOpen, AlertCircle } from "lucide-react"
 
-import {  MailOpen } from "lucide-react"
+import { AgentConfigForm } from "@/components/agent-config-form"
 
 export default async function Dashboard() {
   const supabase = await createClient()
@@ -44,15 +47,36 @@ export default async function Dashboard() {
             <CopyableField label="Customer Secret:" value={customerSecret} />
             <CopyableField label="Embedded code:" value={embeddedCode} />
 
+            <div className="flex items-center gap-2">
+              <MailOpen className="w-4 h-4" />
+              <h2 className="text-xl lg:text-xl text-gray-600 font-bold dark:text-gray-300 leading-relaxed max-w-2xl">
+                Enquire:
+              </h2>
+              <h2 className="text-xl lg:text-xl text-gray-600 dark:text-gray-300 leading-relaxed max-w-2xl">
+                amar@waveify.ai
+              </h2>
+            </div>
+            <div className="w-2 h-2 bg-violet-500 rounded-full animate-pulse" />
+          </CardContent>
+        </Card>
 
-              <div className="flex items-center gap-2">
-                <MailOpen className="w-4 h-4" />
-                  <h2 className="text-xl lg:text-xl text-gray-600 font-bold dark:text-gray-300 leading-relaxed max-w-2xl">Enquire:</h2>
-                  <h2 className="text-xl lg:text-xl text-gray-600 dark:text-gray-300 leading-relaxed max-w-2xl">amar@waveify.ai</h2>
-              </div>
-              <div className="w-2 h-2 bg-violet-500 rounded-full animate-pulse" />
+        <Card className="border-gray-200 dark:border-gray-800">
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold">Agent Configuration</CardTitle>
+            <CardDescription>Configure your Shopify integration settings</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <AgentConfigForm />
 
-
+            <Alert className="bg-blue-50 border-blue-200 dark:bg-blue-950/20 dark:border-blue-900">
+              <AlertCircle className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+              <AlertDescription className="text-blue-800 dark:text-blue-200">
+                Need help filling out this information?{" "}
+                <Link href="/instructions" className="font-medium underline hover:no-underline">
+                  Refer to the Instructions page
+                </Link>
+              </AlertDescription>
+            </Alert>
           </CardContent>
         </Card>
       </div>

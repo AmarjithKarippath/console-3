@@ -147,17 +147,7 @@ const roles = [
 
 export default function TeamPage() {
   const [searchQuery, setSearchQuery] = useState("")
-  const [currentUserName, setCurrentUserName] = useState("User")
-  const supabase = createClient()
-
-  useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      if (data?.user) {
-        const fullName = data.user.user_metadata?.full_name || data.user.email?.split("@")[0] || "User"
-        setCurrentUserName(fullName)
-      }
-    })
-  }, [supabase])
+  const currentUserName = "Local Developer"
 
   const filteredMembers = teamMembers.filter(
     (member) =>

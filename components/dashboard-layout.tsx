@@ -19,6 +19,8 @@ import { createClient } from "@/lib/supabase/client"
 import { ThemeToggle } from "@/components/theme-toggle"
 import type { User } from "@supabase/supabase-js"
 
+import Image from 'next/image'
+
 interface DashboardLayoutProps {
   children: React.ReactNode
   user?: User
@@ -63,9 +65,7 @@ export function DashboardLayout({ children, user: serverUser }: DashboardLayoutP
       <header className="h-16 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 px-6 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
-              <BookOpen className="w-4 h-4 text-white" />
-            </div>
+            <Image src="@/app/assets/waveify_logo.png" alt="Waveify Logo" width={32} height={32} className="w-8 h-8" />
             <span className="font-semibold text-gray-900 dark:text-gray-100">Waveify</span>
           </div>
           <div className="text-sm text-gray-500 dark:text-gray-400">
@@ -92,9 +92,9 @@ export function DashboardLayout({ children, user: serverUser }: DashboardLayoutP
             <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuLabel>{fullName}</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleSignOut}>Sign out</DropdownMenuItem>
+              <Link href="/settings">
+                <DropdownMenuItem>Settings</DropdownMenuItem>
+              </Link>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
