@@ -5,45 +5,62 @@ import { Phone, MessageSquare, ShoppingCart, Package, CreditCard, BarChart } fro
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { EditableInstructionCard } from "@/components/editable-instruction-card"
 import { useToast } from "@/hooks/use-toast"
+import type { LucideIcon } from "lucide-react"
 
-const defaultInstructions = [
+const iconMap: Record<string, LucideIcon> = {
+  Phone,
+  MessageSquare,
+  ShoppingCart,
+  Package,
+  CreditCard,
+  BarChart,
+}
+
+interface Instruction {
+  iconName: string
+  title: string
+  subtitle: string
+  content: string
+}
+
+const defaultInstructions: Instruction[] = [
   {
-    icon: Phone,
+    iconName: "Phone",
     title: "Greeting & Introduction",
     subtitle: "How your AI voice agent should greet customers",
     content:
       "Your AI voice agent should always greet customers warmly and professionally. Start with 'Hello! Thank you for calling [Store Name]. I'm your AI assistant, here to help you with your order, answer product questions, or assist with anything else you need today.' Keep the tone friendly, conversational, and helpful. Always ask how you can assist them right away to keep the conversation moving forward.",
   },
   {
-    icon: MessageSquare,
+    iconName: "MessageSquare",
     title: "Handling Product Inquiries",
     subtitle: "Answering questions about products and inventory",
     content:
       "When customers ask about products, provide detailed information including features, pricing, availability, and shipping times. Access real-time inventory data to give accurate stock information. If a product is out of stock, suggest similar alternatives. Always highlight key benefits and answer follow-up questions. Use natural language to describe products as if you were a knowledgeable sales associate in a physical store.",
   },
   {
-    icon: ShoppingCart,
+    iconName: "ShoppingCart",
     title: "Processing Orders",
     subtitle: "Taking orders and handling checkout via voice",
     content:
       "Guide customers through the ordering process step-by-step. Confirm product selection, quantity, and pricing. Collect shipping information clearly, repeating back the address for confirmation. For payment, securely process credit card information using PCI-compliant voice recognition. Always provide an order confirmation number and estimated delivery date. Ask if they'd like to receive order updates via SMS or email.",
   },
   {
-    icon: Package,
+    iconName: "Package",
     title: "Order Tracking & Status",
     subtitle: "Helping customers track their shipments",
     content:
       "When customers inquire about order status, ask for their order number or email address. Access the order management system to provide real-time tracking information. Share the current status (processing, shipped, out for delivery, delivered), tracking number, and expected delivery date. If there are any delays, proactively explain the reason and provide updated timelines. Offer to send tracking details via SMS or email for their convenience.",
   },
   {
-    icon: CreditCard,
+    iconName: "CreditCard",
     title: "Returns & Refunds",
     subtitle: "Managing return requests and refund processing",
     content:
       "Handle return requests with empathy and efficiency. Ask for the order number and reason for return to understand the issue. Explain your return policy clearly, including timeframes and conditions. If eligible, initiate the return process by generating a return label and providing instructions. For refunds, explain the timeline (typically 5-7 business days) and confirm the refund method. Always try to resolve issues before processing returns by offering exchanges or solutions.",
   },
   {
-    icon: BarChart,
+    iconName: "BarChart",
     title: "Upselling & Cross-selling",
     subtitle: "Recommending additional products to increase order value",
     content:
@@ -52,7 +69,7 @@ const defaultInstructions = [
 ]
 
 export default function SettingsPage() {
-  const [instructions, setInstructions] = useState(defaultInstructions)
+  const [instructions, setInstructions] = useState<Instruction[]>(defaultInstructions)
   const { toast } = useToast()
 
   useEffect(() => {
@@ -98,7 +115,7 @@ export default function SettingsPage() {
             {instructions.map((instruction, index) => (
               <EditableInstructionCard
                 key={index}
-                icon={instruction.icon}
+                icon={iconMap[instruction.iconName]}
                 title={instruction.title}
                 subtitle={instruction.subtitle}
                 content={instruction.content}
