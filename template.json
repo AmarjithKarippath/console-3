@@ -1,0 +1,48 @@
+[
+    merchents: [
+    merchent-1: {
+        name: "ABC Store",
+        location: "New York",
+        category: "Electronics"
+        faqs: [
+            faq-1: {
+                question: "What is your return policy?",
+                answer: "You can return any item within 30 days of purchase."
+                },
+            faq-2: {
+                question: "Do you offer international shipping?",
+                answer: "Yes, we ship to most countries worldwide."
+                }
+            ]
+        customers: [
+            customer-1: {
+                name: "John Doe",
+                age: 30,
+                purchaseHistory: [
+                    purchase-1: {
+                        item: "Laptop",
+                        amount: 1200,
+                        date: "2023-01-15"
+                        },
+                    purchase-2: {
+                        item: "Headphones",
+                        amount: 200,
+                        date: "2023-02-20"
+                        }
+                    ]
+                },
+            customer-2: {
+                name: "Jane Smith",
+                age: 25,
+                purchaseHistory: [
+                    purchase-1: {
+                        item: "Smartphone",
+                        amount: 800,
+                        date: "2023-03-10"
+                        }
+                    ]
+                }
+            ]
+        },
+    ]
+]
