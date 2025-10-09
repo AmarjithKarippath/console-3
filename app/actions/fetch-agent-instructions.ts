@@ -2,7 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server"
 
-const LOGGED_USER_ID = "e1a3d0a3-a67f-4676-8675-30571948984a"
+const LOGGED_USER_ID = "b90b57a9-d2ff-48c7-8e54-369a621483ff"
 
 export async function fetchAgentInstructions() {
   try {

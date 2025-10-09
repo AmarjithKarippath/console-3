@@ -10,7 +10,7 @@ export async function saveAgentConfig(formData: {
 }) {
   try {
     const supabase = await createClient()
-    const logged_user_id = "e1a3d0a3-a67f-4676-8675-30571948984a"
+    const logged_user_id = "b90b57a9-d2ff-48c7-8e54-369a621483ff"
 
     const { data: existingRecord, error: fetchError } = await supabase
       .from("shopify_agents")
