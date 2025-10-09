@@ -7,6 +7,7 @@ import { EditableInstructionCard } from "@/components/editable-instruction-card"
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/hooks/use-toast"
 import { saveAgentInstructions } from "@/app/actions/save-agent-instructions"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import type { LucideIcon } from "lucide-react"
 
 const iconMap: Record<string, LucideIcon> = {
@@ -73,6 +74,7 @@ const defaultInstructions: Instruction[] = [
 export default function SettingsPage() {
   const [instructions, setInstructions] = useState<Instruction[]>(defaultInstructions)
   const [isSaving, setIsSaving] = useState(false)
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false)
   const { toast } = useToast()
 
   useEffect(() => {
@@ -116,10 +118,7 @@ export default function SettingsPage() {
       const result = await saveAgentInstructions(instructions)
 
       if (result.success) {
-        toast({
-          title: "Instructions saved",
-          description: "All agent instructions have been saved to the database.",
-        })
+        setShowSuccessDialog(true)
       } else {
         toast({
           title: "Error saving instructions",
@@ -181,6 +180,25 @@ export default function SettingsPage() {
           </div>
         </div>
       </div>
+
+      <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-center text-xl">Successfully Updated!</DialogTitle>
+            <DialogDescription className="text-center pt-4">
+              All agent instructions have been saved to the database successfully.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-center pt-4">
+            <Button
+              onClick={() => setShowSuccessDialog(false)}
+              className="bg-violet-600 hover:bg-violet-700 text-white"
+            >
+              Close
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </DashboardLayout>
   )
 }
