@@ -10,8 +10,13 @@ import { createClient } from "@/lib/supabase/server"
 export default async function Dashboard() {
   const supabase = await createClient()
 
-  // Fetch the first record from customer_info table
-  const { data: customerInfo, error } = await supabase.from("customer_info").select("*").limit(1).single()
+  const logged_user_id = "e1a3d0a3-a67f-4676-8675-30571948984a"
+
+  const { data: customerInfo, error } = await supabase
+    .from("customer_info")
+    .select("*")
+    .eq("customer_id", logged_user_id)
+    .single()
 
   console.log("[v0] Customer info fetch result:", { customerInfo, error })
 
@@ -24,9 +29,9 @@ export default async function Dashboard() {
     },
   }
 
-  const customerId = customerInfo?.customer_id || "dev-customer-id-12345"
-  const customerSecret = customerInfo?.customer_secret || "dev-secret-key-67890"
-  const embeddedCode = customerInfo?.embedded_code || "<script src='https://example.com/embed.js'></script>"
+  const customerId = customerInfo?.customer_id || ""
+  const customerSecret = customerInfo?.customer_secret || ""
+  const embeddedCode = customerInfo?.embedded_code || ""
 
   const fullName = mockUser.user_metadata?.full_name || mockUser.email?.split("@")[0] || "User"
 
