@@ -1,12 +1,12 @@
 "use server"
 
-import { createServerClient } from "@/lib/supabase/server"
+import { createClient } from "@/lib/supabase/server"
 
 const LOGGED_USER_ID = "e1a3d0a3-a67f-4676-8675-30571948984a"
 
 export async function fetchAgentInstructions() {
   try {
-    const supabase = createServerClient()
+    const supabase = await createClient()
 
     console.log("[v0] Fetching instructions for customer:", LOGGED_USER_ID)
 
@@ -14,7 +14,7 @@ export async function fetchAgentInstructions() {
       .from("agent_instructions")
       .select("*")
       .eq("customer_id", LOGGED_USER_ID)
-      .order("id", { ascending: true })
+      .order("customer_id", { ascending: true })
 
     if (error) {
       console.error("[v0] Error fetching instructions:", error)
@@ -23,7 +23,6 @@ export async function fetchAgentInstructions() {
 
     console.log("[v0] Fetched instructions:", data)
 
-    // Transform database records to match the UI format
     const instructions = data.map((record) => ({
       iconName: "MessageSquare", // Default icon, can be enhanced later
       title: record.section_title,
