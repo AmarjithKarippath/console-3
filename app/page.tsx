@@ -20,14 +20,14 @@ export default async function Dashboard() {
     redirect("/signin")
   }
 
-  const { data: custInfo } = await supabase.from("cust_info").select("*").eq("cust_id", user.id).single()
+  const { data: customerInfo } = await supabase.from("customer_info").select("*").eq("customer_id", user.id).single()
 
   // Get user's full name from metadata or use email as fallback
   const fullName = user.user_metadata?.full_name || user.email?.split("@")[0] || "User"
 
-  const customerId = custInfo?.cust_id || "Not set up yet"
-  const customerSecret = custInfo?.cust_secret || "Not set up yet"
-  const embeddedCode = custInfo?.agent_code || "Not set up yet"
+  const customerId = customerInfo?.customer_id || "Not set up yet"
+  const customerSecret = customerInfo?.customer_secret || "Not set up yet"
+  const embeddedCode = customerInfo?.embedded_code || "Not set up yet"
 
   return (
     <DashboardLayout user={user}>
