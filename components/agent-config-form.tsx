@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Save } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { saveAgentConfig } from "@/app/actions/save-agent-config"
 
 export function AgentConfigForm() {
   const [formData, setFormData] = useState({
@@ -19,6 +20,7 @@ export function AgentConfigForm() {
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isSaving, setIsSaving] = useState(false)
   const [saveSuccess, setSaveSuccess] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
@@ -48,19 +50,25 @@ export function AgentConfigForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setSaveSuccess(false)
+    setSaveError(null)
 
     if (!validateForm()) {
       return
     }
 
     setIsSaving(true)
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    setIsSaving(false)
-    setSaveSuccess(true)
 
-    // Hide success message after 3 seconds
-    setTimeout(() => setSaveSuccess(false), 3000)
+    const result = await saveAgentConfig(formData)
+
+    setIsSaving(false)
+
+    if (result.success) {
+      setSaveSuccess(true)
+      // Hide success message after 3 seconds
+      setTimeout(() => setSaveSuccess(false), 3000)
+    } else {
+      setSaveError(result.error || "Failed to save configuration")
+    }
   }
 
   const handleChange = (field: string, value: string) => {
@@ -68,6 +76,10 @@ export function AgentConfigForm() {
     // Clear error when user starts typing
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: "" }))
+    }
+    // Clear save error when user makes changes
+    if (saveError) {
+      setSaveError(null)
     }
   }
 
@@ -138,6 +150,12 @@ export function AgentConfigForm() {
           <AlertDescription className="text-green-800 dark:text-green-200">
             Configuration saved successfully!
           </AlertDescription>
+        </Alert>
+      )}
+
+      {saveError && (
+        <Alert className="bg-red-50 border-red-200 dark:bg-red-950/20 dark:border-red-900">
+          <AlertDescription className="text-red-800 dark:text-red-200">{saveError}</AlertDescription>
         </Alert>
       )}
 
