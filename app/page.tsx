@@ -5,8 +5,16 @@ import { AgentConfigForm } from "@/components/agent-config-form"
 import { MailOpen, AlertCircle } from "lucide-react"
 import Link from "next/link"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { createClient } from "@/lib/supabase/server"
 
 export default async function Dashboard() {
+  const supabase = await createClient()
+
+  // Fetch the first record from customer_info table
+  const { data: customerInfo, error } = await supabase.from("customer_info").select("*").limit(1).single()
+
+  console.log("[v0] Customer info fetch result:", { customerInfo, error })
+
   // Mock user data for local development
   const mockUser = {
     id: "local-dev-user",
@@ -16,10 +24,9 @@ export default async function Dashboard() {
     },
   }
 
-  // Mock customer info for local development
-  const customerId = "dev-customer-id-12345"
-  const customerSecret = "dev-secret-key-67890"
-  const embeddedCode = "<script src='https://example.com/embed.js'></script>"
+  const customerId = customerInfo?.customer_id || "dev-customer-id-12345"
+  const customerSecret = customerInfo?.customer_secret || "dev-secret-key-67890"
+  const embeddedCode = customerInfo?.embedded_code || "<script src='https://example.com/embed.js'></script>"
 
   const fullName = mockUser.user_metadata?.full_name || mockUser.email?.split("@")[0] || "User"
 
