@@ -7,6 +7,7 @@ import { EditableInstructionCard } from "@/components/editable-instruction-card"
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/hooks/use-toast"
 import { saveAgentInstructions } from "@/app/actions/save-agent-instructions"
+import { fetchAgentInstructions } from "@/app/actions/fetch-agent-instructions"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -78,6 +79,7 @@ const defaultInstructions: Instruction[] = [
 export default function SettingsPage() {
   const [instructions, setInstructions] = useState<Instruction[]>(defaultInstructions)
   const [isSaving, setIsSaving] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const [showSuccessDialog, setShowSuccessDialog] = useState(false)
   const [showCreateDialog, setShowCreateDialog] = useState(false)
   const [newInstruction, setNewInstruction] = useState<Instruction>({
@@ -89,37 +91,43 @@ export default function SettingsPage() {
   const { toast } = useToast()
 
   useEffect(() => {
-    const saved = localStorage.getItem("agentInstructions")
-    if (saved) {
+    const loadInstructions = async () => {
+      setIsLoading(true)
       try {
-        const parsed = JSON.parse(saved)
-        const isValid =
-          Array.isArray(parsed) &&
-          parsed.every((item) => item.iconName && typeof item.iconName === "string" && iconMap[item.iconName])
+        const result = await fetchAgentInstructions()
 
-        if (isValid) {
-          setInstructions(parsed)
+        if (result.success && result.instructions.length > 0) {
+          console.log("[v0] Loaded instructions from database:", result.instructions)
+          setInstructions(result.instructions)
         } else {
-          // Clear invalid data and use defaults
-          console.log("[v0] Invalid localStorage data detected, using defaults")
-          localStorage.removeItem("agentInstructions")
+          console.log("[v0] No instructions found in database, using defaults")
+          // Use default instructions if none exist in database
+          setInstructions(defaultInstructions)
         }
-      } catch (e) {
-        console.error("Failed to parse saved instructions:", e)
-        localStorage.removeItem("agentInstructions")
+      } catch (error) {
+        console.error("[v0] Error loading instructions:", error)
+        toast({
+          title: "Error loading instructions",
+          description: "Failed to load instructions from database. Using defaults.",
+          variant: "destructive",
+        })
+        setInstructions(defaultInstructions)
+      } finally {
+        setIsLoading(false)
       }
     }
-  }, [])
+
+    loadInstructions()
+  }, [toast])
 
   const handleSaveInstruction = (index: number, newContent: string) => {
     const updated = [...instructions]
     updated[index] = { ...updated[index], content: newContent }
     setInstructions(updated)
-    localStorage.setItem("agentInstructions", JSON.stringify(updated))
 
     toast({
-      title: "Saved successfully",
-      description: "Your instruction has been updated.",
+      title: "Saved locally",
+      description: "Click 'Save Instructions' to save to database.",
     })
   }
 
@@ -160,11 +168,10 @@ export default function SettingsPage() {
 
     const updated = [...instructions, newInstruction]
     setInstructions(updated)
-    localStorage.setItem("agentInstructions", JSON.stringify(updated))
 
     toast({
       title: "Instruction created",
-      description: "Your new instruction has been added successfully.",
+      description: "Click 'Save Instructions' to save to database.",
     })
 
     setNewInstruction({
@@ -179,12 +186,21 @@ export default function SettingsPage() {
   const handleDeleteInstruction = (index: number) => {
     const updated = instructions.filter((_, i) => i !== index)
     setInstructions(updated)
-    localStorage.setItem("agentInstructions", JSON.stringify(updated))
 
     toast({
       title: "Instruction deleted",
-      description: "The instruction has been removed.",
+      description: "Click 'Save Instructions' to update database.",
     })
+  }
+
+  if (isLoading) {
+    return (
+      <DashboardLayout>
+        <div className="flex items-center justify-center h-64">
+          <div className="text-gray-600 dark:text-gray-400">Loading instructions...</div>
+        </div>
+      </DashboardLayout>
+    )
   }
 
   return (
