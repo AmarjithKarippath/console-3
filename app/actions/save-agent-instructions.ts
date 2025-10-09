@@ -23,13 +23,11 @@ export async function saveAgentInstructions(instructions: Instruction[]) {
       return { success: false, error: deleteError.message }
     }
 
-    // Then insert all new instructions
     const instructionsToInsert = instructions.map((instruction) => ({
       customer_id: LOGGED_USER_ID,
-      title: instruction.title,
-      subtitle: instruction.subtitle,
-      content: instruction.content,
-      icon_name: instruction.iconName,
+      section_title: instruction.title,
+      section_subtitle: instruction.subtitle,
+      section_content: instruction.content,
     }))
 
     const { data, error: insertError } = await supabase.from("agent_instructions").insert(instructionsToInsert).select()
