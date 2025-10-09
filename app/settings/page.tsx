@@ -1,13 +1,17 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Phone, MessageSquare, ShoppingCart, Package, CreditCard, BarChart } from "lucide-react"
+import { Phone, MessageSquare, ShoppingCart, Package, CreditCard, BarChart, Plus } from "lucide-react"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { EditableInstructionCard } from "@/components/editable-instruction-card"
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/hooks/use-toast"
 import { saveAgentInstructions } from "@/app/actions/save-agent-instructions"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import type { LucideIcon } from "lucide-react"
 
 const iconMap: Record<string, LucideIcon> = {
@@ -75,6 +79,13 @@ export default function SettingsPage() {
   const [instructions, setInstructions] = useState<Instruction[]>(defaultInstructions)
   const [isSaving, setIsSaving] = useState(false)
   const [showSuccessDialog, setShowSuccessDialog] = useState(false)
+  const [showCreateDialog, setShowCreateDialog] = useState(false)
+  const [newInstruction, setNewInstruction] = useState<Instruction>({
+    iconName: "MessageSquare",
+    title: "",
+    subtitle: "",
+    content: "",
+  })
   const { toast } = useToast()
 
   useEffect(() => {
@@ -137,6 +148,45 @@ export default function SettingsPage() {
     }
   }
 
+  const handleCreateInstruction = () => {
+    if (!newInstruction.title || !newInstruction.subtitle || !newInstruction.content) {
+      toast({
+        title: "Missing fields",
+        description: "Please fill in all fields to create an instruction.",
+        variant: "destructive",
+      })
+      return
+    }
+
+    const updated = [...instructions, newInstruction]
+    setInstructions(updated)
+    localStorage.setItem("agentInstructions", JSON.stringify(updated))
+
+    toast({
+      title: "Instruction created",
+      description: "Your new instruction has been added successfully.",
+    })
+
+    setNewInstruction({
+      iconName: "MessageSquare",
+      title: "",
+      subtitle: "",
+      content: "",
+    })
+    setShowCreateDialog(false)
+  }
+
+  const handleDeleteInstruction = (index: number) => {
+    const updated = instructions.filter((_, i) => i !== index)
+    setInstructions(updated)
+    localStorage.setItem("agentInstructions", JSON.stringify(updated))
+
+    toast({
+      title: "Instruction deleted",
+      description: "The instruction has been removed.",
+    })
+  }
+
   return (
     <DashboardLayout>
       <div className="space-y-8">
@@ -155,13 +205,23 @@ export default function SettingsPage() {
                 Configure how your AI voice agent should interact with customers
               </p>
             </div>
-            <Button
-              onClick={handleSaveAllInstructions}
-              disabled={isSaving}
-              className="bg-violet-600 hover:bg-violet-700 text-white"
-            >
-              {isSaving ? "Saving..." : "Save Instructions"}
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                onClick={() => setShowCreateDialog(true)}
+                variant="outline"
+                className="border-violet-600 text-violet-600 hover:bg-violet-50"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Create Instruction
+              </Button>
+              <Button
+                onClick={handleSaveAllInstructions}
+                disabled={isSaving}
+                className="bg-violet-600 hover:bg-violet-700 text-white"
+              >
+                {isSaving ? "Saving..." : "Save Instructions"}
+              </Button>
+            </div>
           </div>
           <div className="grid grid-cols-1 gap-6">
             {instructions.map((instruction, index) => {
@@ -174,12 +234,81 @@ export default function SettingsPage() {
                   subtitle={instruction.subtitle}
                   content={instruction.content}
                   onSave={(newContent) => handleSaveInstruction(index, newContent)}
+                  onDelete={() => handleDeleteInstruction(index)}
                 />
               )
             })}
           </div>
         </div>
       </div>
+
+      <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
+        <DialogContent className="sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Create New Instruction</DialogTitle>
+            <DialogDescription>
+              Add a new instruction for your AI voice agent. Fill in all the details below.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="icon">Icon</Label>
+              <Select
+                value={newInstruction.iconName}
+                onValueChange={(value) => setNewInstruction({ ...newInstruction, iconName: value })}
+              >
+                <SelectTrigger id="icon">
+                  <SelectValue placeholder="Select an icon" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Phone">Phone</SelectItem>
+                  <SelectItem value="MessageSquare">Message Square</SelectItem>
+                  <SelectItem value="ShoppingCart">Shopping Cart</SelectItem>
+                  <SelectItem value="Package">Package</SelectItem>
+                  <SelectItem value="CreditCard">Credit Card</SelectItem>
+                  <SelectItem value="BarChart">Bar Chart</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="title">Title</Label>
+              <Input
+                id="title"
+                placeholder="e.g., Customer Support"
+                value={newInstruction.title}
+                onChange={(e) => setNewInstruction({ ...newInstruction, title: e.target.value })}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="subtitle">Subtitle</Label>
+              <Input
+                id="subtitle"
+                placeholder="e.g., How to handle customer support inquiries"
+                value={newInstruction.subtitle}
+                onChange={(e) => setNewInstruction({ ...newInstruction, subtitle: e.target.value })}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="content">Content</Label>
+              <Textarea
+                id="content"
+                placeholder="Enter the detailed instruction content..."
+                value={newInstruction.content}
+                onChange={(e) => setNewInstruction({ ...newInstruction, content: e.target.value })}
+                rows={6}
+              />
+            </div>
+          </div>
+          <div className="flex justify-end gap-2">
+            <Button variant="outline" onClick={() => setShowCreateDialog(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleCreateInstruction} className="bg-violet-600 hover:bg-violet-700 text-white">
+              Create Instruction
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
         <DialogContent className="sm:max-w-md">
