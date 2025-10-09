@@ -4,7 +4,9 @@ import { useState, useEffect } from "react"
 import { Phone, MessageSquare, ShoppingCart, Package, CreditCard, BarChart } from "lucide-react"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { EditableInstructionCard } from "@/components/editable-instruction-card"
+import { Button } from "@/components/ui/button"
 import { useToast } from "@/hooks/use-toast"
+import { saveAgentInstructions } from "@/app/actions/save-agent-instructions"
 import type { LucideIcon } from "lucide-react"
 
 const iconMap: Record<string, LucideIcon> = {
@@ -70,6 +72,7 @@ const defaultInstructions: Instruction[] = [
 
 export default function SettingsPage() {
   const [instructions, setInstructions] = useState<Instruction[]>(defaultInstructions)
+  const [isSaving, setIsSaving] = useState(false)
   const { toast } = useToast()
 
   useEffect(() => {
@@ -107,6 +110,34 @@ export default function SettingsPage() {
     })
   }
 
+  const handleSaveAllInstructions = async () => {
+    setIsSaving(true)
+    try {
+      const result = await saveAgentInstructions(instructions)
+
+      if (result.success) {
+        toast({
+          title: "Instructions saved",
+          description: "All agent instructions have been saved to the database.",
+        })
+      } else {
+        toast({
+          title: "Error saving instructions",
+          description: result.error || "Failed to save instructions. Please try again.",
+          variant: "destructive",
+        })
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
   return (
     <DashboardLayout>
       <div className="space-y-8">
@@ -118,10 +149,21 @@ export default function SettingsPage() {
         </div>
 
         <div>
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Agent Instructions</h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">
-            Configure how your AI voice agent should interact with customers
-          </p>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Agent Instructions</h2>
+              <p className="text-gray-600 dark:text-gray-400 mt-1">
+                Configure how your AI voice agent should interact with customers
+              </p>
+            </div>
+            <Button
+              onClick={handleSaveAllInstructions}
+              disabled={isSaving}
+              className="bg-violet-600 hover:bg-violet-700 text-white"
+            >
+              {isSaving ? "Saving..." : "Save Instructions"}
+            </Button>
+          </div>
           <div className="grid grid-cols-1 gap-6">
             {instructions.map((instruction, index) => {
               const IconComponent = iconMap[instruction.iconName] || MessageSquare
