@@ -55,15 +55,6 @@ export function CustomerRequirementForm() {
       return
     }
 
-    if (!formData.websiteAddress.trim()) {
-      toast({
-        title: "Validation Error",
-        description: "Website address is required",
-        variant: "destructive",
-      })
-      return
-    }
-
     setIsSubmitting(true)
 
     try {
@@ -147,7 +138,7 @@ export function CustomerRequirementForm() {
 
       <div className="space-y-2">
         <Label htmlFor="websiteAddress" className="text-sm font-medium">
-          Website Address <span className="text-red-500">*</span>
+          Website Address <span className="text-muted-foreground text-xs">(Optional)</span>
         </Label>
         <Input
           id="websiteAddress"
@@ -155,7 +146,6 @@ export function CustomerRequirementForm() {
           placeholder="https://example.com"
           value={formData.websiteAddress}
           onChange={(e) => setFormData({ ...formData, websiteAddress: e.target.value })}
-          required
         />
       </div>
 
