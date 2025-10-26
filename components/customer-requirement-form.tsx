@@ -23,11 +23,14 @@ const countryCodes = [
   { code: "+34", country: "ES" },
 ]
 
+const planOptions = ["Free", "Starter", "Professional", "Enterprise"]
+
 export function CustomerRequirementForm() {
   const { toast } = useToast()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [formData, setFormData] = useState({
     requirement: "",
+    plan: "",
     countryCode: "+1",
     contactNumber: "",
     websiteAddress: "",
@@ -41,6 +44,15 @@ export function CustomerRequirementForm() {
       toast({
         title: "Validation Error",
         description: "Customer requirement is required",
+        variant: "destructive",
+      })
+      return
+    }
+
+    if (!formData.plan) {
+      toast({
+        title: "Validation Error",
+        description: "Please select a plan",
         variant: "destructive",
       })
       return
@@ -72,6 +84,7 @@ export function CustomerRequirementForm() {
       // Reset form
       setFormData({
         requirement: "",
+        plan: "",
         countryCode: "+1",
         contactNumber: "",
         websiteAddress: "",
@@ -102,6 +115,24 @@ export function CustomerRequirementForm() {
           required
           className="min-h-[100px]"
         />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="plan" className="text-sm font-medium">
+          Plan <span className="text-red-500">*</span>
+        </Label>
+        <Select value={formData.plan} onValueChange={(value) => setFormData({ ...formData, plan: value })}>
+          <SelectTrigger id="plan">
+            <SelectValue placeholder="Select a plan" />
+          </SelectTrigger>
+          <SelectContent>
+            {planOptions.map((plan) => (
+              <SelectItem key={plan} value={plan}>
+                {plan}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="space-y-2">
