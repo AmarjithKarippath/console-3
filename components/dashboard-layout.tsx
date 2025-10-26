@@ -3,7 +3,7 @@
 import type React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Bell, Home, Settings, CreditCard, BookOpen } from "lucide-react"
+import { Bell, Home, Settings, BookOpen } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
@@ -84,7 +84,6 @@ export function DashboardLayout({ children, user }: DashboardLayoutProps) {
             <nav className="space-y-1">
               {[
                 { name: "Overview", href: "/", icon: Home },
-                { name: "Billing", href: "/billing", icon: CreditCard },
                 { name: "Instructions", href: "/instructions", icon: BookOpen },
                 { name: "Settings", href: "/settings", icon: Settings },
               ].map((item) => {
