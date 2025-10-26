@@ -1,7 +1,17 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Phone, MessageSquare, ShoppingCart, Package, CreditCard, BarChart, Plus } from "lucide-react"
+import {
+  Phone,
+  MessageSquare,
+  ShoppingCart,
+  Package,
+  CreditCard,
+  BarChart,
+  Plus,
+  MailOpen,
+  AlertCircle,
+} from "lucide-react"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { EditableInstructionCard } from "@/components/editable-instruction-card"
 import { Button } from "@/components/ui/button"
@@ -13,6 +23,12 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { CopyableField } from "@/components/copyable-field"
+import { AgentConfigForm } from "@/components/agent-config-form"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import Link from "next/link"
+import { createClient } from "@/lib/supabase/server"
 import type { LucideIcon } from "lucide-react"
 
 const iconMap: Record<string, LucideIcon> = {
@@ -82,6 +98,7 @@ export default function SettingsPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [showSuccessDialog, setShowSuccessDialog] = useState(false)
   const [showCreateDialog, setShowCreateDialog] = useState(false)
+  const [customerInfo, setCustomerInfo] = useState<any>(null)
   const [newInstruction, setNewInstruction] = useState<Instruction>({
     iconName: "MessageSquare",
     title: "",
@@ -91,9 +108,22 @@ export default function SettingsPage() {
   const { toast } = useToast()
 
   useEffect(() => {
-    const loadInstructions = async () => {
+    const loadData = async () => {
       setIsLoading(true)
       try {
+        const supabase = await createClient()
+        const logged_user_id = "e1a3d0a3-a67f-4676-8675-30571948984a"
+
+        const { data: custInfo, error: custError } = await supabase
+          .from("customer_info")
+          .select("*")
+          .eq("customer_id", logged_user_id)
+          .single()
+
+        if (!custError && custInfo) {
+          setCustomerInfo(custInfo)
+        }
+
         const result = await fetchAgentInstructions()
 
         if (result.success && result.instructions.length > 0) {
@@ -101,14 +131,13 @@ export default function SettingsPage() {
           setInstructions(result.instructions)
         } else {
           console.log("[v0] No instructions found in database, using defaults")
-          // Use default instructions if none exist in database
           setInstructions(defaultInstructions)
         }
       } catch (error) {
-        console.error("[v0] Error loading instructions:", error)
+        console.error("[v0] Error loading data:", error)
         toast({
-          title: "Error loading instructions",
-          description: "Failed to load instructions from database. Using defaults.",
+          title: "Error loading data",
+          description: "Failed to load some data. Please refresh the page.",
           variant: "destructive",
         })
         setInstructions(defaultInstructions)
@@ -117,7 +146,7 @@ export default function SettingsPage() {
       }
     }
 
-    loadInstructions()
+    loadData()
   }, [toast])
 
   const handleSaveInstruction = (index: number, newContent: string) => {
@@ -197,11 +226,15 @@ export default function SettingsPage() {
     return (
       <DashboardLayout>
         <div className="flex items-center justify-center h-64">
-          <div className="text-gray-600 dark:text-gray-400">Loading instructions...</div>
+          <div className="text-gray-600 dark:text-gray-400">Loading...</div>
         </div>
       </DashboardLayout>
     )
   }
+
+  const customerId = customerInfo?.customer_id || ""
+  const customerSecret = customerInfo?.customer_secret || ""
+  const embeddedCode = customerInfo?.embedded_code || ""
 
   return (
     <DashboardLayout>
@@ -212,6 +245,49 @@ export default function SettingsPage() {
             <p className="text-gray-600 dark:text-gray-400 mt-1">Manage your account preferences and configuration</p>
           </div>
         </div>
+
+        <Card className="border-gray-200 dark:border-gray-800">
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold">User Information</CardTitle>
+            <CardDescription>Your API credentials and embedded code</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <CopyableField label="Customer ID:" value={customerId} />
+            <CopyableField label="Customer Secret:" value={customerSecret} />
+            <CopyableField label="Embedded code:" value={embeddedCode} />
+
+            <div className="flex items-center gap-2">
+              <MailOpen className="w-4 h-4" />
+              <h2 className="text-xl lg:text-xl text-gray-600 font-bold dark:text-gray-300 leading-relaxed max-w-2xl">
+                Enquire:
+              </h2>
+              <h2 className="text-xl lg:text-xl text-gray-600 dark:text-gray-300 leading-relaxed max-w-2xl">
+                amar@waveify.ai
+              </h2>
+            </div>
+            <div className="w-2 h-2 bg-violet-500 rounded-full animate-pulse" />
+          </CardContent>
+        </Card>
+
+        <Card className="border-gray-200 dark:border-gray-800">
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold">Agent Configuration</CardTitle>
+            <CardDescription>Configure your Shopify integration settings</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <AgentConfigForm />
+
+            <Alert className="bg-blue-50 border-blue-200 dark:bg-blue-950/20 dark:border-blue-900">
+              <AlertCircle className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+              <AlertDescription className="text-blue-800 dark:text-blue-200">
+                Need help filling out this information?{" "}
+                <Link href="/instructions" className="font-medium underline hover:no-underline">
+                  Refer to the Instructions page
+                </Link>
+              </AlertDescription>
+            </Alert>
+          </CardContent>
+        </Card>
 
         <div>
           <div className="flex items-center justify-between mb-4">
