@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useToast } from "@/hooks/use-toast"
+import { saveCustomerRequirement } from "@/app/actions/save-customer-requirement"
 
 const countryCodes = [
   { code: "+1", country: "US/CA" },
@@ -70,30 +71,30 @@ export function CustomerRequirementForm() {
     setIsSubmitting(true)
 
     try {
-      // TODO: Add server action to save to Supabase
-      console.log("[v0] Submitting customer requirement:", {
-        ...formData,
-        fullContactNumber: `${formData.countryCode}${formData.contactNumber}`,
-      })
+      const result = await saveCustomerRequirement(formData)
 
-      toast({
-        title: "Success",
-        description: "Customer requirement submitted successfully",
-      })
+      if (result.success) {
+        toast({
+          title: "Success",
+          description: "Customer requirement submitted successfully",
+        })
 
-      // Reset form
-      setFormData({
-        requirement: "",
-        plan: "",
-        countryCode: "+1",
-        contactNumber: "",
-        websiteAddress: "",
-      })
+        // Reset form
+        setFormData({
+          requirement: "",
+          plan: "",
+          countryCode: "+1",
+          contactNumber: "",
+          websiteAddress: "",
+        })
+      } else {
+        throw new Error(result.error)
+      }
     } catch (error) {
       console.error("[v0] Error submitting requirement:", error)
       toast({
         title: "Error",
-        description: "Failed to submit requirement. Please try again.",
+        description: error instanceof Error ? error.message : "Failed to submit requirement. Please try again.",
         variant: "destructive",
       })
     } finally {
