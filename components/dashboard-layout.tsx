@@ -1,10 +1,9 @@
 "use client"
 
 import type React from "react"
-
 import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
-import { Bell, Home, Settings, Workflow } from "lucide-react"
+import { usePathname } from "next/navigation"
+import { Bell, Home, Settings, BookOpen } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
@@ -15,38 +14,45 @@ import {
   DropdownMenuSeparator,
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu"
-
-const navigation = [
-  { name: "Overview", href: "/", icon: Home },
-  { name: "Settings", href: "/settings", icon: Settings },
-]
+import { ThemeToggle } from "@/components/theme-toggle"
+import Image from "next/image"
 
 interface DashboardLayoutProps {
   children: React.ReactNode
+  user?: any
 }
 
-export function DashboardLayout({ children }: DashboardLayoutProps) {
+export function DashboardLayout({ children, user }: DashboardLayoutProps) {
   const pathname = usePathname()
-  const router = useRouter()
+
+  const fullName = user?.user_metadata?.full_name || user?.email?.split("@")[0] || "User"
+  const getInitials = (name: string) => {
+    const parts = name.split(" ")
+    if (parts.length >= 2) {
+      return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase()
+    }
+    return name.substring(0, 2).toUpperCase()
+  }
+  const initials = getInitials(fullName)
+  const avatarUrl = user?.user_metadata?.avatar_url
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-gray-950">
       {/* Header */}
-      <header className="h-16 border-b border-gray-200 bg-white px-6 flex items-center justify-between">
+      <header className="h-16 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 px-6 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
-              <Workflow className="w-4 h-4 text-white" />
-            </div>
-            <span className="font-semibold text-gray-900">Waveify</span>
+            <Image src="/waveify-logo.png" alt="Waveify Logo" width={32} height={32} className="w-8 h-8" />
+            <span className="font-semibold text-gray-900 dark:text-gray-100">Waveify</span>
           </div>
-          <div className="text-sm text-gray-500">
+          <div className="text-sm text-gray-500 dark:text-gray-400">
             <span>Dashboard</span> <span className="mx-1">/</span>
             <span className="capitalize">{pathname === "/" ? "Overview" : pathname.slice(1)}</span>
           </div>
         </div>
 
         <div className="flex items-center gap-4">
+          <ThemeToggle />
           <Button variant="ghost" size="icon" className="relative">
             <Bell className="w-4 h-4" />
             <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>
@@ -55,17 +61,17 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon">
                 <Avatar className="w-8 h-8">
-                  <AvatarImage src="/placeholder.svg?height=32&width=32" />
-                  <AvatarFallback>AE</AvatarFallback>
+                  <AvatarImage src={avatarUrl || "/placeholder.svg?height=32&width=32"} />
+                  <AvatarFallback>{initials}</AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel>Alex Evans</DropdownMenuLabel>
+              <DropdownMenuLabel>{fullName}</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => router.push("/signin")}>Sign out</DropdownMenuItem>
+              <Link href="/settings">
+                <DropdownMenuItem>Settings</DropdownMenuItem>
+              </Link>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -73,17 +79,23 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
       <div className="flex">
         {/* Sidebar */}
-        <aside className="w-60 border-r border-gray-200 bg-white h-[calc(100vh-4rem)] overflow-y-auto">
+        <aside className="w-60 border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 h-[calc(100vh-4rem)] overflow-y-auto">
           <div className="p-4">
             <nav className="space-y-1">
-              {navigation.map((item) => {
+              {[
+                { name: "Overview", href: "/", icon: Home },
+                { name: "Instructions", href: "/instructions", icon: BookOpen },
+                { name: "Settings", href: "/settings", icon: Settings },
+              ].map((item) => {
                 const isActive = pathname === item.href
                 return (
                   <Link
                     key={item.name}
                     href={item.href}
                     className={`flex items-center w-full justify-start px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                      isActive ? "bg-purple-50 text-purple-700 hover:bg-purple-100" : "text-gray-600 hover:bg-gray-50"
+                      isActive
+                        ? "bg-purple-50 dark:bg-purple-950 text-purple-700 dark:text-purple-400 hover:bg-purple-100 dark:hover:bg-purple-900"
+                        : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-900"
                     }`}
                   >
                     <item.icon className="w-4 h-4 mr-3" />
@@ -96,7 +108,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 p-8 bg-gray-50">{children}</main>
+        <main className="flex-1 p-8 bg-gray-50 dark:bg-gray-900">{children}</main>
       </div>
     </div>
   )
