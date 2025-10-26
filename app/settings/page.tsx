@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button"
 import { useToast } from "@/hooks/use-toast"
 import { saveAgentInstructions } from "@/app/actions/save-agent-instructions"
 import { fetchAgentInstructions } from "@/app/actions/fetch-agent-instructions"
+import { fetchCustomerInfo } from "@/app/actions/fetch-customer-info"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -28,7 +29,6 @@ import { CopyableField } from "@/components/copyable-field"
 import { AgentConfigForm } from "@/components/agent-config-form"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import Link from "next/link"
-import { createClient } from "@/lib/supabase/server"
 import type { LucideIcon } from "lucide-react"
 
 const iconMap: Record<string, LucideIcon> = {
@@ -111,17 +111,10 @@ export default function SettingsPage() {
     const loadData = async () => {
       setIsLoading(true)
       try {
-        const supabase = await createClient()
-        const logged_user_id = "e1a3d0a3-a67f-4676-8675-30571948984a"
+        const custResult = await fetchCustomerInfo()
 
-        const { data: custInfo, error: custError } = await supabase
-          .from("customer_info")
-          .select("*")
-          .eq("customer_id", logged_user_id)
-          .single()
-
-        if (!custError && custInfo) {
-          setCustomerInfo(custInfo)
+        if (custResult.success && custResult.customerInfo) {
+          setCustomerInfo(custResult.customerInfo)
         }
 
         const result = await fetchAgentInstructions()
