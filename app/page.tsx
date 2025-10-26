@@ -2,6 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { CopyableField } from "@/components/copyable-field"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { AgentConfigForm } from "@/components/agent-config-form"
+import { CustomerRequirementForm } from "@/components/customer-requirement-form"
 import { MailOpen, AlertCircle } from "lucide-react"
 import Link from "next/link"
 import { Alert, AlertDescription } from "@/components/ui/alert"
@@ -83,6 +84,16 @@ export default async function Dashboard() {
                 </Link>
               </AlertDescription>
             </Alert>
+          </CardContent>
+        </Card>
+
+        <Card className="border-gray-200 dark:border-gray-800">
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold">Customer Requirement</CardTitle>
+            <CardDescription>Submit your requirements and contact information</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <CustomerRequirementForm />
           </CardContent>
         </Card>
       </div>
